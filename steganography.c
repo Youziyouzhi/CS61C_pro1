@@ -22,14 +22,63 @@
 Color *evaluateOnePixel(Image *image, int row, int col)
 {
 	//YOUR CODE HERE
+	Color *ic = malloc(sizeof(Color));
+	int index = row * image->cols + col;
+
+	if (image->image[index]->B & 1) {
+		ic->B = 255;
+		ic->G = 255;
+		ic->R = 255;
+	} else {
+		ic->B = 0;
+		ic->G = 0;
+		ic->R = 0;
+	}
+
+	return ic;
 }
 
 //Given an image, creates a new image extracting the LSB of the B channel.
 Image *steganography(Image *image)
 {
 	//YOUR CODE HERE
+
+	Image *imp = malloc(sizeof(Image));
+	imp->cols = image->cols;
+	imp->rows = image->rows;
+	int index;
+	int size = image->cols * image->rows;
+
+	Color **colorlist = malloc(size * sizeof(Color*));
+	imp->image = colorlist;
+
+	for (int i = 0; i < image->rows; i++) {
+		for (int j = 0; j < image->cols; j++) {
+			index = i * image->cols + j;
+			colorlist[index] = evaluateOnePixel(image, i, j);
+		}
+	}
+
+	return imp;
 }
 
+
+int isPPM(char *filename) 
+{
+	uint32_t len = 0;
+	while (filename[len] != '\0') {
+		len++;
+	}
+	if (len < 4) return 0;
+	if (filename[len - 4] == '.' && 
+		filename[len - 3] == 'p' && 
+		filename[len - 2] == 'p' && 
+		filename[len - 1] == 'm') {
+			return 1;
+		} else {
+			return 0;
+		}
+}
 /*
 Loads a file of ppm P3 format from a file, and prints to stdout (e.g. with printf) a new image, 
 where each pixel is black if the LSB of the B channel is 0, 
@@ -46,4 +95,21 @@ Make sure to free all memory before returning!
 int main(int argc, char **argv)
 {
 	//YOUR CODE HERE
+	if (argc != 2) {
+		perror("The number of arguments are incorrect !");
+		return -1;
+	} 
+	if (!isPPM(argv[1])) {
+		perror("The format of file is incorrect !");
+		return -1;
+	} 
+	Image *ip_without_secret = readData(argv[1]);
+	Image *ip_with_secret = steganography(ip_without_secret);
+
+	writeData(ip_with_secret);
+
+	freeImage(ip_with_secret);
+	freeImage(ip_without_secret);
+
+	return 0;
 }
