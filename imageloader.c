@@ -88,3 +88,21 @@ void freeImage(Image *image)
 	free(image->image);
 	free(image);
 }
+
+//Determine whether a file is in ppm format
+int isPPM(char *filename) 
+{
+	uint32_t len = 0;
+	while (filename[len] != '\0') {
+		len++;
+	}
+	if (len < 4) return 0;
+	if (filename[len - 4] == '.' && 
+		filename[len - 3] == 'p' && 
+		filename[len - 2] == 'p' && 
+		filename[len - 1] == 'm') {
+			return 1;
+		} else {
+			return 0;
+		}
+}

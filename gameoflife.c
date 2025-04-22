@@ -17,7 +17,10 @@
 #include <inttypes.h>
 #include "imageloader.h"
 
-
+const char *Errorinfo = 
+	"Usage: ./gameOfLife filename rule\n"
+	"filename is an ASCII PPM file (type P3) with maximum value 255.\n"
+	"rule is a hex number beginning with 0x; Life is 0x1808.\n";
 
 //Calculate the coordinate of neighborhood
 int ring(int val, int max) 
@@ -89,6 +92,24 @@ Color *evaluateOneCell(Image *image, int row, int col, uint32_t rule)
 Image *life(Image *image, uint32_t rule)
 {
 	//YOUR CODE HERE
+	Image * imp = (Image*)malloc(sizeof(Image));
+	imp->cols = image->cols;
+	imp->rows = image->rows;
+
+	int size, index;
+	size = image->cols * image->rows;
+
+	Color **colorlist = (Color**)malloc(size * sizeof(Color*));
+	imp->image = colorlist;
+
+	for (int i = 0; i < image->rows; i++) {
+		for (int j = 0; j < image->cols; j++) {
+			index = i * image->cols + j;
+			colorlist[index] = evaluateOneCell(image, i, j, rule);
+		}
+	}
+
+	return imp;
 }
 
 /*
@@ -109,4 +130,22 @@ You may find it useful to copy the code from steganography.c, to start.
 int main(int argc, char **argv)
 {
 	//YOUR CODE HERE
+	if (argc != 3) {
+		fprintf(stderr, "%s", Errorinfo);
+		return -1;
+	}
+	if (!isPPM(argv[1])) {
+		perror("The format of file is incorrect !");
+		return -1;
+	} 
+
+	Image *ip_cur = readData(argv[1]);
+	Image *ip_gerenation = life(ip_cur, (uint32_t)strtoul(argv[2], NULL, 0));
+
+	writeData(ip_gerenation);
+
+	freeImage(ip_cur);
+	freeImage(ip_gerenation);
+
+	return 0;
 }

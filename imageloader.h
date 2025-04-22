@@ -23,3 +23,6 @@ extern void writeData(Image *image);
 
 //Frees an image and all its associated data
 extern void freeImage(Image *image);
+
+//Determine whether a file is in ppm format
+extern int isPPM(char *filename); 

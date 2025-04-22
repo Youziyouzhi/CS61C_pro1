@@ -68,6 +68,7 @@ while ($n < $max)
 	endif
     @ n = $n + 1
 end
-echo "Making gif in $1.gif"
-convert -delay 20 -loop 0 -scale 400% $outdir/$1/*.ppm $1.gif
 echo ""
+echo "Making gif in $1.gif"
+#convert -delay 20 -loop 0 -scale 400% $outdir/$1/*.ppm $1.gif 不应该注释可能有错误
+# echo ""

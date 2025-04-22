@@ -61,24 +61,8 @@ Image *steganography(Image *image)
 
 	return imp;
 }
+		
 
-
-int isPPM(char *filename) 
-{
-	uint32_t len = 0;
-	while (filename[len] != '\0') {
-		len++;
-	}
-	if (len < 4) return 0;
-	if (filename[len - 4] == '.' && 
-		filename[len - 3] == 'p' && 
-		filename[len - 2] == 'p' && 
-		filename[len - 1] == 'm') {
-			return 1;
-		} else {
-			return 0;
-		}
-}
 /*
 Loads a file of ppm P3 format from a file, and prints to stdout (e.g. with printf) a new image, 
 where each pixel is black if the LSB of the B channel is 0, 
